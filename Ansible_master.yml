@@ -13,7 +13,7 @@
   tasks:
     - name: creating ec2 Instances
       amazon.aws.ec2_instance:
-        instance_type: "t3micro"
+        instance_type: "t3.micro"
         security_group: "{{ sg }}"
         image_id: "{{ id }}"
         name: "{{ item }}-{{ env }}"
