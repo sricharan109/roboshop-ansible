@@ -1,20 +1,21 @@
 - name: Creating the ec2 Instances and DNS 
   hosts: all
   connection: local
-  sg: sg-0944b77fa17921eaf
-  id: ami-0220d79f3f480ecf5
-  env: dev
-  domain_name: cerry.in
-  instance:
-    - mongodb
-    - catalogue
+  vars:
+    sg: sg-0944b77fa17921eaf
+    id: ami-0220d79f3f480ecf5
+    env: dev
+    domain_name: cerry.in
+    instance:
+      - mongodb
+      - catalogue
 
   tasks:
     - name: creating ec2 Instances
       amazon.aws.ec2_instance:
         instance_type: "t3micro"
         security_group: "{{ sg }}"
-        image_id: " {{ id }}"
+        image_id: "{{ id }}"
         name: "{{ item }}-{{ env }}"
         tags:
           Project: roboshop
