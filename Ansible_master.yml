@@ -30,7 +30,7 @@
     - name: print the output
       ansible.builtin.debug:
         msg: "{{ ec2_output }}"
-        
+
     - name: creating dns route 53
       amazon.aws.route53:
         state: present
@@ -39,6 +39,7 @@
         type: A 
         ttl: 1
         value: "{{ item.instances[0].private_ip_address }}"
+        overwrite: true
       loop: "{{ ec2_output.results }}"
       when: action == "create"
 
