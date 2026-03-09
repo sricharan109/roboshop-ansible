@@ -5,6 +5,7 @@
     sg: sg-0944b77fa17921eaf
     id: ami-0220d79f3f480ecf5
     env: dev
+    action: create
     domain_name: cerry.in
     instance:
       - mongodb
@@ -24,6 +25,8 @@
           Name: "{{ item }}-{{ env }}"
       loop: "{{ instance }}"
       register: ec2_output
+      when: action == "create"
+
     - name: print the output
       ansible.builtin.debug:
         msg: "{{ ec2_output }}"
@@ -36,6 +39,7 @@
         ttl: 1
         value: "{{ item.instances[0].private_ip_address }}"
       loop: "{{ ec2_output.results }}"
+      when: action == "create"
 
     - name: creating dns for the frontend 
       amazon.aws.route53:
@@ -46,7 +50,16 @@
         ttl: 1
         value: "{{ item.instances[0].public_ip_address }}"
       loop: "{{ ec2_output.results }}"
-      when: item.item == "frontend"
+      when: 
+      - item.item == "frontend"
+      - action == "create"
+
+    - name: delete ec2 instance
+      amazon.aws.ec2_instance:
+        state: absent
+        name: "{{ item }}-{{ env }}"
+      loop: "{{ instances }}"
+
 
 
 
