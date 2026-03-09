@@ -1,0 +1,67 @@
+- name: Installing node.js with suitable version
+  hosts: user
+  become: yes
+  tasks:
+    - name: disable old nodejs version
+      ansible.builtin.command: dnf module disable nodejs -y
+
+    - name: selecting node version 20
+      ansible.builtin.command: dnf module enable nodejs:20 -y
+
+    - name: Installing node.js
+      ansible.builtin.dnf:
+        name: nodejs
+        state: present
+
+    - name: create a system user roboshop
+      ansible.builtin.user:
+        name: roboshop
+        system: true
+        home: /app
+        shell: /sbin/nologin
+        comment: "roboshop system user"
+
+    - name: delete app directory 
+      ansible.builtin.file:
+        path: /app
+        state: absent
+
+    - name: create app directory
+      ansible.builtin.file:
+        path: /app
+        state: directory
+
+    - name: delete user zip file
+      ansible.builtin.file:
+        path: /tmp/catalogue.zip
+        state: absent
+
+    - name: download user file
+      ansible.builtin.get_url:
+        url: https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip 
+        dest: /tmp/catalogue.zip
+
+    - name: unarchieve catalogue
+      ansible.builtin.unarchive:
+        src: /tmp/catalogue.zip
+        dest: /app
+        remote_src: yes
+      
+    - name: install depencencies
+      community.general.npm:
+        path: /app
+
+    - name: copy user
+      ansible.builtin.copy:
+        src: catalogu.service
+        dest: /etc/systemd/system/user.service
+    
+    - name: start user
+      ansible.builtin.service:
+        name: user
+        state: restarted
+        enabled: yes
+
+    
+
+      
