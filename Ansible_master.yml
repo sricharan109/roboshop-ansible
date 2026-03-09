@@ -17,6 +17,7 @@
       - rabbitmq
       - payment
       - frontend
+      - shipping
 
   tasks:
     - name: creating ec2 Instances
