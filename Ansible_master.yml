@@ -26,6 +26,7 @@
         security_group: "{{ sg }}"
         image_id: "{{ id }}"
         name: "{{ item }}-{{ env }}"
+        wait: true
         tags:
           Project: roboshop
           Component: "{{ item }}"
