@@ -1,5 +1,5 @@
 - name: Installing node.js with suitable version
-  host: catalogue
+  hosts: catalogue
   become: yes
   tasks:
     - name: selecting node version 20
