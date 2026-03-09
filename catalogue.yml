@@ -2,6 +2,9 @@
   hosts: catalogue
   become: yes
   tasks:
+    - name: disable old nodejs version
+      ansible.builtin.command: dnf module disable nodejs -y
+
     - name: selecting node version 20
       ansible.builtin.command: dnf module enable nodejs:20 -y
 
